@@ -378,6 +378,7 @@ class ActionManager(ManagerBase):
             action: The actions to process.
         """
         # check if action dimension is valid
+        # print("action.shape:", action.shape, self.total_action_dim)
         if self.total_action_dim != action.shape[1]:
             raise ValueError(f"Invalid action shape, expected: {self.total_action_dim}, received: {action.shape[1]}.")
         # store the input actions
