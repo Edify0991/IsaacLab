@@ -15,6 +15,8 @@ from isaaclab.envs import DirectRLEnv
 from isaaclab.sim.spawners.from_files import GroundPlaneCfg, spawn_ground_plane
 from isaaclab.utils.math import quat_apply
 
+from isaacgymenvs.fmmp.parts import build_part_index_map, extract_part_features
+
 from .humanoid_amp_env_cfg import HumanoidAmpEnvCfg
 from .motions import MotionLoader
 
@@ -48,6 +50,9 @@ class HumanoidAmpEnv(DirectRLEnv):
         self.amp_observation_buffer = torch.zeros(
             (self.num_envs, self.cfg.num_amp_observations, self.cfg.amp_observation_space), device=self.device
         )
+
+        self.prior_mode = getattr(self.cfg, "prior_mode", "amp")
+        self.part_index_map = build_part_index_map(self.robot.data.joint_names)
 
     def _setup_scene(self):
         self.robot = Articulation(self.cfg.robot)
@@ -99,6 +104,14 @@ class HumanoidAmpEnv(DirectRLEnv):
         # build AMP observation
         self.amp_observation_buffer[:, 0] = obs.clone()
         self.extras = {"amp_obs": self.amp_observation_buffer.view(-1, self.amp_observation_size)}
+        if self.prior_mode == "fmmp":
+            part_features = extract_part_features(
+                self.robot.data.joint_pos.unsqueeze(1),
+                self.robot.data.joint_vel.unsqueeze(1),
+                self.part_index_map,
+                history=1,
+            )
+            self.extras["fmmp_parts"] = {k: v[:, -1] for k, v in part_features.items()}
 
         return {"policy": obs}
 

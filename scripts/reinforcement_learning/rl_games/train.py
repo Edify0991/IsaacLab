@@ -30,6 +30,13 @@ parser.add_argument(
 parser.add_argument("--checkpoint", type=str, default=None, help="Path to model checkpoint.")
 parser.add_argument("--sigma", type=str, default=None, help="The policy's initial standard deviation.")
 parser.add_argument("--max_iterations", type=int, default=None, help="RL Policy training iterations.")
+parser.add_argument(
+    "--prior",
+    type=str,
+    default="amp",
+    choices=["amp", "fmmp"],
+    help="Motion prior mode: legacy AMP baseline or FMMP latent prior.",
+)
 parser.add_argument("--wandb-project-name", type=str, default=None, help="the wandb's project name")
 parser.add_argument("--wandb-entity", type=str, default=None, help="the entity (team) of wandb's project")
 parser.add_argument("--wandb-name", type=str, default=None, help="the name of wandb's run")
@@ -102,6 +109,8 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     # override configurations with non-hydra CLI arguments
     env_cfg.scene.num_envs = args_cli.num_envs if args_cli.num_envs is not None else env_cfg.scene.num_envs
     env_cfg.sim.device = args_cli.device if args_cli.device is not None else env_cfg.sim.device
+    if hasattr(env_cfg, "prior_mode"):
+        env_cfg.prior_mode = args_cli.prior
     # check for invalid combination of CPU device with distributed training
     if args_cli.distributed and args_cli.device is not None and "cpu" in args_cli.device:
         raise ValueError(

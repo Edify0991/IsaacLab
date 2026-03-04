@@ -1,0 +1,7 @@
+input_motion_list: source/isaaclab_tasks/isaaclab_tasks/direct/humanoid_amp/motions
+output_json: scripts/fmmp/no_transition_motion_list.json
+trim_fraction: [0.2, 0.8]
+skill_map:
+  humanoid_run.npz: RunLegs
+  humanoid_walk.npz: StopAndShootUpperBody
+  humanoid_dance.npz: ArmDribble

@@ -1,0 +1,8 @@
+policy_checkpoint: logs/rl_games/humanoid_amp_fmmp/latest.pth
+command:
+  mode: random
+  duration_s: 45
+  switch_interval_s: [1.0, 3.0]
+  skill_names: [RunLegs, ArmDribble, StopAndShootUpperBody]
+output_dir: outputs/eval_switching
+record_video: false
