@@ -1,0 +1,26 @@
+experiment:
+  name: humanoid_amp_fmmp
+  seed: 42
+  prior_mode: fmmp
+  task: Isaac-Humanoid-AMP-Run-Direct-v0
+
+data:
+  motion_list: scripts/fmmp/no_transition_motion_list.json
+  skill_names: [RunLegs, ArmDribble, StopAndShootUpperBody]
+
+manifold:
+  history: 12
+  latent_dim: 16
+  hidden_dim: 128
+
+prior:
+  part_weight: 1.0
+  global_weight: 1.0
+
+transition_generator:
+  horizon: 20
+  trigger_steps: 30
+
+rl:
+  algo: rl_games_ppo
+  total_iterations: 2000

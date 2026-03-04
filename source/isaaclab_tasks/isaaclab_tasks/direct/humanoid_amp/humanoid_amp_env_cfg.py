@@ -34,6 +34,7 @@ class HumanoidAmpEnvCfg(DirectRLEnvCfg):
     state_space = 0
     num_amp_observations = 2
     amp_observation_space = 81
+    prior_mode = "amp"
 
     early_termination = True
     termination_height = 0.5
